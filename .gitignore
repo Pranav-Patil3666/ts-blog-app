@@ -1,0 +1,35 @@
+# Node modules (all services)
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+
+# Environment files (VERY IMPORTANT)
+.env
+**/.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Coverage (if you add testing later)
+coverage/
+
+# VS Code (optional)
+.vscode/
+
+# Lock files (OPTIONAL STRATEGY)
+# Keep package-lock.json if you want reproducible builds
+# Remove below line if you want to track it
