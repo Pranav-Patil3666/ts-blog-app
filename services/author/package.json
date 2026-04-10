@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -17,12 +17,16 @@
     "@neondatabase/serverless": "^1.0.2",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/mongoose": "^5.11.96",
     "@types/multer": "^2.1.0",
     "@types/typescript": "^0.4.29",
     "cloudinary": "^2.9.0",
     "datauri": "^4.1.0",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.4.1",
     "multer": "^2.1.1"
   },
   "devDependencies": {

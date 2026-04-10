@@ -3,8 +3,15 @@ dotenv.config();
 
 import express from 'express';
 import { sql } from './utils/db.js';
+import blogRoutes from './routes/blog.js';
+import {v2 as cloudinary} from 'cloudinary';
 
 
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME!,
+    api_key: process.env.CLOUD_API_KEY!,
+    api_secret: process.env.CLOUD_API_SECRET!
+})
 
 const app = express();
 
@@ -23,7 +30,7 @@ async function initDB(){
                 category VARCHAR(255) NOT NULL,
                 author VARCHAR(255) NOT NULL,
                 createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
+            );
         `;
         await sql`
             CREATE TABLE IF NOT EXISTS comment(
@@ -33,7 +40,7 @@ async function initDB(){
                 username VARCHAR(255) NOT NULL,
                 blogid VARCHAR(255) NOT NULL,
                 createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
+            );
         `;
         await sql`
             CREATE TABLE IF NOT EXISTS savedblogs(
@@ -41,7 +48,7 @@ async function initDB(){
                 userid VARCHAR(255) NOT NULL,
                 blogid VARCHAR(255) NOT NULL,
                 createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
+            );
         `;
 
         console.log("Database initialised succesfully");
@@ -50,9 +57,11 @@ async function initDB(){
     }
 }
 
+app.use("/api/v1",blogRoutes);
+
 initDB().then(()=>{
         app.listen(port, ()=>{
-            console.log(`Author service is running on port ${port}`);
+            console.log(`Author service is running on port http://localhost:${port}`);
         })
 
 })
