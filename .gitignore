@@ -33,3 +33,6 @@ coverage/
 # Lock files (OPTIONAL STRATEGY)
 # Keep package-lock.json if you want reproducible builds
 # Remove below line if you want to track it
+
+
+services/author/authorNotes.md
