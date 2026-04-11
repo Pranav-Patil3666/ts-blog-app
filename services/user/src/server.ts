@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import connectDb from './utils/db.js';
 import userRoutes from './routes/user.js';
 import {v2 as cloudinary} from 'cloudinary';
+import cors from 'cors'; // to allow cross-origin requests from frontend
 
 
 dotenv.config();
@@ -20,7 +21,9 @@ const app =express();
 connectDb();
 const port = process.env.PORT
 
-app.use(express.json());
+app.use(express.json());  
+app.use(cors());  //enable CORS for all routes, you can also configure it to allow only specific origins if needed
+
 app.use('/api/users',userRoutes);
 
 app.listen(port,()=>{

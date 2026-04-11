@@ -36,3 +36,5 @@ coverage/
 
 
 services/author/authorNotes.md
+services/user/notes/auth.md
+services/blog/blog.md
