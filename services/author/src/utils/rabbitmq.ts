@@ -45,10 +45,13 @@ export const invalidateCacheJob= async(cacheKeys:string[])=>{
             keys: cacheKeys,
         };
 
-        await publishToQueue("Cache-invalidation : ", message)
+        await publishToQueue("cache-invalidation", message)
         console.log("✅ Cache invalidation job published to RabbitMQ");
 
     }catch(error){
         console.error("❌ Failed to publish cache invalidation job to RabbitMQ");
     }
 };
+
+
+//now we will receive this in blog service

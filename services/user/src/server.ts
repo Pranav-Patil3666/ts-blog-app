@@ -22,6 +22,7 @@ connectDb();
 const port = process.env.PORT
 
 app.use(express.json());  
+app.use(express.urlencoded({extended:true})); // to parse urlencoded data from forms
 app.use(cors());  //enable CORS for all routes, you can also configure it to allow only specific origins if needed
 
 app.use('/api/users',userRoutes);

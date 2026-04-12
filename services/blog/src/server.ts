@@ -3,10 +3,17 @@ dotenv.config();
 import express from "express";
 import blogRoutes from "./routes/blog.js";
 import {createClient} from "redis";
+import {startCacheConsumer} from "./utils/consume.js"
+import cors from "cors";
 
 const app=express();
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(cors());
 
 const PORT=process.env.PORT 
+
+startCacheConsumer()
 
 if(!process.env.REDIS_URL){
     throw new Error("Redis URL is not defined")
