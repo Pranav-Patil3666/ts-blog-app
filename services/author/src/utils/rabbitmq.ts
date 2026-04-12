@@ -1,0 +1,54 @@
+//this file is used to connect to rabbitmq and create channel
+
+import amqp from 'amqplib';
+
+let channel: amqp.Channel;
+
+export const connectRabbitMQ = async()=>{
+    try{
+
+        const connection= await amqp.connect({
+            protocol:"amqp",
+            hostname:"localhost",
+            port:5672,
+            username:"admin",
+            password:"admin123",
+        })
+
+        channel= await connection.createChannel();
+
+        console.log("✅connected to Rabbitmq")
+
+    }catch(error){
+        console.error("❌ failed to connect to RabbitMQ");
+    }
+}
+
+
+export const publishToQueue= async(queueName:string, message:any)=>{
+    if(!channel){
+        console.error("RabbitMQ channel is not initialised");
+        return;
+    }
+
+    await channel.assertQueue(queueName,{durable: true});
+
+    channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)),{
+        persistent:true,
+    })
+};
+
+export const invalidateCacheJob= async(cacheKeys:string[])=>{
+    try{
+        const message={
+            action:"invalidateCache",
+            keys: cacheKeys,
+        };
+
+        await publishToQueue("Cache-invalidation : ", message)
+        console.log("✅ Cache invalidation job published to RabbitMQ");
+
+    }catch(error){
+        console.error("❌ Failed to publish cache invalidation job to RabbitMQ");
+    }
+};

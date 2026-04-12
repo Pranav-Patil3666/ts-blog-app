@@ -5,6 +5,7 @@ import express from 'express';
 import { sql } from './utils/db.js';
 import blogRoutes from './routes/blog.js';
 import {v2 as cloudinary} from 'cloudinary';
+import {connectRabbitMQ} from './utils/rabbitmq.js'
 
 
 cloudinary.config({
@@ -14,6 +15,7 @@ cloudinary.config({
 })
 
 const app = express();
+connectRabbitMQ()
 
 const port = process.env.PORT || 5001;
 
