@@ -34,10 +34,9 @@ export const publishToQueue= async(queueName:string, message:any)=>{
     await channel.assertQueue(queueName,{durable: true});
 
     channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)),{
-        persistent:true,
+        persistent:true,  
     })
 };
-
 export const invalidateCacheJob= async(cacheKeys:string[])=>{
     try{
         const message={
@@ -52,6 +51,7 @@ export const invalidateCacheJob= async(cacheKeys:string[])=>{
         console.error("❌ Failed to publish cache invalidation job to RabbitMQ");
     }
 };
+
 
 
 //now we will receive this in blog service
