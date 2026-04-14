@@ -131,3 +131,99 @@ export const deleteBlog =TryCatch(async(req:AuthenticatedRequest,res)=>{
     message: "Blog deleted"
   })
 })
+
+export const addComment = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const { comment, blogid } = req.body;
+
+    if (!comment || !blogid) {
+      res.status(400).json({ message: "Comment and blog ID are required" });
+      return;
+    }
+
+    const user = req.user;
+
+    const result = await sql`
+      INSERT INTO comment (comment, userid, username, blogid)
+      VALUES (${comment}, ${user?._id}, ${user?.name}, ${String(blogid)})
+      RETURNING *
+    `;
+
+    res.status(201).json({
+      message: "Comment added successfully",
+      comment: result[0],
+    });
+  }
+);
+
+
+export const getComments = TryCatch(
+  async (req, res) => {
+    const { blogid } = req.params;
+
+    if (!blogid) {
+      res.status(400).json({ message: "Blog ID is required" });
+      return;
+    }
+
+    const comments = await sql`
+      SELECT * FROM comment
+      WHERE blogid = ${String(blogid)}
+      ORDER BY createdAt DESC
+    `;
+
+    res.json(comments);
+  }
+);
+
+export const saveBlog = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const { blogid } = req.body;
+
+    if (!blogid) {
+      res.status(400).json({ message: "Blog ID is required" });
+      return;
+    }
+
+    const user = req.user;
+
+    // prevent duplicate saves
+    const existing = await sql`
+      SELECT * FROM savedblogs
+      WHERE userid = ${user?._id} AND blogid = ${String(blogid)}
+    `;
+
+    if (existing.length > 0) {
+      res.status(400).json({ message: "Blog already saved" });
+      return;
+    }
+
+    const result = await sql`
+      INSERT INTO savedblogs (userid, blogid)
+      VALUES (${user?._id}, ${String(blogid)})
+      RETURNING *
+    `;
+
+    res.status(201).json({
+      message: "Blog saved successfully",
+      saved: result[0],
+    });
+  }
+);
+
+
+export const getSavedBlogs = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
+
+    const saved = await sql`
+      SELECT b.*
+      FROM savedblogs s
+      JOIN blogs b ON b.id = s.blogid::int
+      WHERE s.userid = ${user?._id}
+      ORDER BY s.createdAt DESC
+    `;
+
+    res.json(saved);
+  }
+);

@@ -73,12 +73,6 @@ export function SearchDropdown({
                 </div>
               ) : null}
 
-              {!loading && !query.trim() ? (
-                <div className="rounded-2xl bg-vanilla px-4 py-5 text-sm text-ink/60">
-                  Start typing to search real blog posts from your backend.
-                </div>
-              ) : null}
-
               {!loading && results.length > 0 ? (
                 <div className="space-y-2">
                   {results.map((result) => {

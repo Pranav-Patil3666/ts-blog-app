@@ -10,6 +10,7 @@ import { SearchDropdown } from "@/components/SearchDropdown";
 import { Sidebar } from "@/components/Sidebar";
 import { getCurrentUser } from "@/services/api";
 import { createBlog, getAllBlogs } from "@/services/blogService";
+import { getSavedBlogs, toggleSaveBlog } from "@/services/saveBlogService";
 import { consumeLoginTransition, getStoredUser } from "@/utils/auth";
 
 export function HomePage() {
@@ -27,6 +28,8 @@ export function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [savedBlogIds, setSavedBlogIds] = useState(new Set());
+  const [saveLoadingMap, setSaveLoadingMap] = useState({});
 
   useEffect(() => {
     const loadUser = async () => {
@@ -44,6 +47,34 @@ export function HomePage() {
 
     loadUser();
   }, []);
+
+  useEffect(() => {
+    if (!user?._id) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadSavedBlogs = async () => {
+      try {
+        const savedIds = await getSavedBlogs(user._id);
+
+        if (!cancelled) {
+          setSavedBlogIds(new Set(savedIds.map(String)));
+        }
+      } catch {
+        if (!cancelled) {
+          setSavedBlogIds(new Set());
+        }
+      }
+    };
+
+    loadSavedBlogs();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user?._id]);
 
   const loadBlogs = async () => {
     setBlogsLoading(true);
@@ -127,6 +158,47 @@ export function HomePage() {
     setIsSearchOpen(false);
     setSearchQuery("");
     navigate(`/blogs/${result.id}`);
+  };
+
+  const handleToggleSave = async (blogId) => {
+    if (!user?._id) {
+      return;
+    }
+
+    const key = String(blogId);
+    const wasSaved = savedBlogIds.has(key);
+
+    setSaveLoadingMap((current) => ({ ...current, [key]: true }));
+    setSavedBlogIds((current) => {
+      const next = new Set(current);
+
+      if (wasSaved) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+
+      return next;
+    });
+
+    try {
+      await toggleSaveBlog(user._id, blogId);
+    } catch (requestError) {
+      setBlogsError(requestError.message);
+      setSavedBlogIds((current) => {
+        const next = new Set(current);
+
+        if (wasSaved) {
+          next.add(key);
+        } else {
+          next.delete(key);
+        }
+
+        return next;
+      });
+    } finally {
+      setSaveLoadingMap((current) => ({ ...current, [key]: false }));
+    }
   };
 
   return (
@@ -219,7 +291,17 @@ export function HomePage() {
                 ) : null}
 
                 {!blogsLoading
-                  ? blogs.map((post, index) => <BlogCard key={post.id} index={index} post={post} />)
+                  ? blogs.map((post, index) => (
+                      <BlogCard
+                        key={post.id}
+                        index={index}
+                        isSaved={savedBlogIds.has(String(post.id))}
+                        onToggleSave={handleToggleSave}
+                        post={post}
+                        saveLoading={Boolean(saveLoadingMap[String(post.id)])}
+                        user={user}
+                      />
+                    ))
                   : null}
               </div>
             </section>
