@@ -4,6 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { loginWithGoogle } from "@/services/api";
+import { markLoginTransition } from "@/utils/auth";
 
 export function CallbackPage() {
   const location = useLocation();
@@ -28,6 +29,7 @@ export function CallbackPage() {
     const exchangeCode = async () => {
       try {
         await loginWithGoogle(code);
+        markLoginTransition();
         navigate("/", { replace: true });
       } catch (requestError) {
         setError(requestError.message);

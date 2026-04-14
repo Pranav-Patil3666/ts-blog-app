@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { BlogDetailPage } from "./pages/BlogDetail";
 import { CallbackPage } from "./pages/Callback";
+import { HomePage } from "./pages/Home";
 import { LoginPage } from "./pages/Login";
 import { ProfilePage } from "./pages/ProfilePage";
 import { isAuthenticated } from "./utils/auth";
@@ -17,15 +19,30 @@ export default function App() {
     <Routes>
       <Route
         path="/"
-        element={<Navigate to={isAuthenticated() ? "/profile" : "/login"} replace />}
+        element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        }
       />
-      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/login"
+        element={isAuthenticated() ? <Navigate to="/" replace /> : <LoginPage />}
+      />
       <Route path="/auth/callback" element={<CallbackPage />} />
       <Route
         path="/profile"
         element={
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogs/:id"
+        element={
+          <ProtectedRoute>
+            <BlogDetailPage />
           </ProtectedRoute>
         }
       />

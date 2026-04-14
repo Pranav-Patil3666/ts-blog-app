@@ -1,5 +1,6 @@
 const TOKEN_KEY = "user_api_token";
 const USER_KEY = "user_api_user";
+const LOGIN_LOADER_KEY = "show_home_loader";
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -38,4 +39,18 @@ export function clearAuthSession() {
 
 export function isAuthenticated() {
   return Boolean(getToken());
+}
+
+export function markLoginTransition() {
+  sessionStorage.setItem(LOGIN_LOADER_KEY, "true");
+}
+
+export function consumeLoginTransition() {
+  const shouldShow = sessionStorage.getItem(LOGIN_LOADER_KEY) === "true";
+
+  if (shouldShow) {
+    sessionStorage.removeItem(LOGIN_LOADER_KEY);
+  }
+
+  return shouldShow;
 }

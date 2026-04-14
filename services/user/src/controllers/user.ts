@@ -38,11 +38,14 @@ export const loginUser= async(req: Request,res: Response)=>{
 
         const token = jwt.sign({user}, process.env.JWT_SECRET as string,{expiresIn:"5d"});
 
+        console.log("User logged in successfully");
         res.status(200).json({
             message:"Login successful",
             token,
             user
         })
+
+        
 
     }catch(error: any){
         res.status(500).json({message: error.message})
