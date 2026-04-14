@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-copper: #a75f37;
+  --color-copper-dark: #8d4f2c;
+  --color-vanilla: #f2e7dd;
+  --color-vanilla-deep: #e8d6c7;
+  --color-ink: #2b2b2b;
+  --radius-xl: 1rem;
+}
+
+:root {
+  color: var(--color-ink);
+  background: linear-gradient(180deg, #f7efe7 0%, #f2e7dd 100%);
+  font-family: Inter, Poppins, "Segoe UI", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(167, 95, 55, 0.1), transparent 28%),
+    linear-gradient(180deg, #f7efe7 0%, #f2e7dd 100%);
+}
+
+#root {
+  min-height: 100vh;
+}

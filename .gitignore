@@ -5,7 +5,7 @@ dist/
 **/dist/
 
 .env
-**/.env
+**/.env   
 
 logs/
 *.log
@@ -22,3 +22,5 @@ coverage/
 services/author/authorNotes.md
 services/user/notes/auth.md
 services/blog/blog.md
+
+frontend/README.md
